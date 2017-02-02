@@ -2,50 +2,33 @@
 # Autores: Stephanie Espinoza (09-11100)
 #          Ronald Becerra     (12-10706)
 
+#!/usr/bin/python
+# -*- coding: <encoding name> -*-
 
+from datetime import datetime
+import sys
 
 ################################################################################
 #####################  C L A S E S   A U X I L I A R E S  ######################
 ################################################################################
 
-class fecha:
-    def __init__(self,dia,mes,anio):
-        self.dia = dia
-        self.mes = mes
-        self.anio = anio
-        
-        if (dia != int(dia)) or (mes != int(mes)) or (anio != int(anio)):
-            print("Las fechas solo pueden contener numeros enteros.")
+class fechaMetodo:
+    def __init__(self,string):
+        try:
+            datetime_object = datetime.strptime(string, '%b %d %Y')
+            return datetime_object
+        except:
+            print("La fecha debe contener: mes (tres letras iniciales), día y año.")
             return 0
-        if (dia < 1) or (dia > 31):
-            print("Dia invalido.")
-            return 0
-        if (mes < 1) or (mes > 12):
-            print("El mes debe estar entre 1 y 12.")
-            return 0
-        if mes not in [1,3,5,7,8,10,12]:
-            if mes == 2:
-                try: 
-                    assert(dia <= 29)
-                    return 1
-                except:
-                    print("Dia invalido para el mes")
-                    return 0
-            else:
-                try: 
-                    assert(dia <= 30)
-                    return 1
-                except:
-                    print("Dia invalido para el mes")
-                    return 0
-        else:
-            return 1
-
+            
 class transaccion:
     """ Servira para registrar un credito o un debito """
     def __init__(self,monto,fecha,id_local):
         self.monto = monto
-        self.fecha = fecha
+        try:
+            self.fecha = datetime.strptime(fecha, '%b %d %Y')
+        except:
+            self.fecha = None
         self.id_local = id_local
         self.pin = None
 
@@ -69,14 +52,29 @@ class billeteraElectronica:
         print("El saldo actual es: "+str(self.balanceActual))
         return self.balanceActual
 
-    def recargar(self,monto,dia,mes,anio,id_local):
+    def recargar(self,monto,fecha,id_local):
+        try:
+            assert((monto == float(monto)) and (monto > 0))
+        except:
+            print("El monto a recargar debe ser un entero positivo.")
+            return 0
         credito = transaccion(monto,fecha,id_local)
-        self.listaCreditos.append(credito)
-        self.balanceActual += monto
-        print("El saldo fue recargado exitosamente.")
-        return 1
+        if credito.fecha == None:
+            print("Fecha no válida")
+            print("El formato de la fecha debe ser: mes (tres letras iniciales), dia, anio.")
+            return 0
+        else:
+            self.listaCreditos.append(credito)
+            self.balanceActual += monto
+            print("El saldo fue recargado exitosamente.")
+            return 1
 
     def consumir(self,monto,fecha,id_local, pin_usuario):
+        try:
+            assert((monto == float(monto)) and (monto > 0))
+        except:
+            print("El monto a recargar debe ser un entero positivo.")
+            return 0
         if pin_usuario != self.pin:
             print("El pin ingresado no es valido.")
             return 0
@@ -85,17 +83,13 @@ class billeteraElectronica:
             return 0
         else:
             debito = transaccion(monto,fecha,id_local)
-            debito.pin = pin_usuario
-            self.listaCreditos.append(debito)
-            self.balanceActual -= monto
-            print("El consumo fue realizado exitosamente.")
-            return 1
-            
-
-################################################################################
-#####################  R U T I N A   P R I N C I P A L  ########################
-################################################################################
-
-class rutinaPrincipal():
-    def ejecutar(self):
-        pass
+            if debito.fecha == None:
+                print("Fecha no válida.")
+                print("El formato de la fecha debe ser: mes (tres letras iniciales), dia, anio.")
+                return 0
+            else:
+                debito.pin = pin_usuario
+                self.listaDebitos.append(debito)
+                self.balanceActual -= monto
+                print("El consumo fue realizado exitosamente.")
+                return 1
