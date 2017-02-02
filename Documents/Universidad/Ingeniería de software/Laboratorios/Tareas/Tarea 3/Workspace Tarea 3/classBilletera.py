@@ -1,9 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # Creado en 01/02/2017
 # Autores: Stephanie Espinoza (09-11100)
 #          Ronald Becerra     (12-10706)
-
-#!/usr/bin/python
-# -*- coding: <encoding name> -*-
 
 from datetime import datetime
 import sys
