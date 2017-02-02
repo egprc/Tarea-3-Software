@@ -26,6 +26,7 @@ class GlobalTester(unittest.TestCase):
         res = billetera.saldo()
         self.assertTrue(res >= 0, "La funcion registra saldos negativos.")
 
+
     def testConsumo_MenosSaldoQueMonto(self):
         """Se intenta realizar un consumo teniendo menos saldo que el monto a gastar"""
         billetera = billeteraElectronica(34,"Ronald","Alfonso","Becerra","Gil",23714250,"cont45")
